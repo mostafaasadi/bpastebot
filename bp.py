@@ -24,7 +24,7 @@ second = 2
 
 # start_handler function
 def start(bot, update):
-    update.message.reply_text('Hi, Get me your long text')
+    update.message.reply_text('Hi, Give me your long text')
     return second
 
 # get text and call paste function
