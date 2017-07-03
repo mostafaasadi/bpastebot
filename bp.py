@@ -36,7 +36,7 @@ def second(bot, update):
     # call paste function
     url = paste(txt , author)
     # replay the url to user
-    bot.sendMessage(chat_id=update.message.chat_id,text=url)
+    bot.sendMessage(chat_id=update.message.chat_id,reply_to_message_id=update.message.message_id,text=url)
 
 # cancel function
 def cancel(bot,update):
