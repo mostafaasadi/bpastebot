@@ -32,7 +32,10 @@ def second(bot, update):
     # get text
     txt = update.message.text
     # get user name for author
-    author = update.message.from_user.first_name + " " + update.message.from_user.last_name
+    try:
+        author = update.message.from_user.first_name + " " + update.message.from_user.last_name
+    except Exception: 
+        author = "Anonymous user"
     # call paste function
     url = paste(txt , author)
     # replay the url to user
@@ -52,7 +55,10 @@ def inlinequery(bot, update):
     results = list()
     # get ans send inline info to paste function
     def inlinepaste():
-        author = update.inline_query.from_user.first_name + " " + update.inline_query.from_user.last_name
+        try:
+            author = update.inline_query.from_user.first_name + " " + update.inline_query.from_user.last_name
+        except Exception: 
+            author = "Anonymous user"
         url = paste(query,author)
         return url
     # add inline query to bot
