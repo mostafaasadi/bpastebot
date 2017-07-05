@@ -34,7 +34,7 @@ def second(bot, update):
     # get user name for author
     try:
         author = update.message.from_user.first_name + " " + update.message.from_user.last_name
-    except Exception: 
+    except Exception:
         author = "Anonymous user"
     # call paste function
     url = paste(txt , author)
@@ -55,14 +55,48 @@ def inlinequery(bot, update):
     results = list()
     # get ans send inline info to paste function
     def inlinepaste():
+        global url
         try:
             author = update.inline_query.from_user.first_name + " " + update.inline_query.from_user.last_name
-        except Exception: 
+        # set name for Anonymous user
+        except Exception:
             author = "Anonymous user"
         url = paste(query,author)
         return url
     # add inline query to bot
-    results.append(InlineQueryResultArticle(id=uuid4(),title="Paste it!" , description="put your text and click", thumb_url="http://url/beepastelogo.png", input_message_content=InputTextMessageContent(inlinepaste())))
+    # inline mode for zero character
+    if len(query) == 0 :
+        results.clear()
+        results.append(InlineQueryResultArticle(
+        id=uuid4(),
+        title=" ▶️ Beepaste",
+        description="type some text less than 256 character in inline mode",
+        url="t.me/bpaste_bot",
+        thumb_url="http://137.74.154.122/beepastelogo.png",
+        input_message_content=InputTextMessageContent("Do you want to try me?! write something \n@bpaste_bot")
+        ))
+    # inline mode for long text
+    elif len(query) > 255 :
+        results.clear()
+        results.append(InlineQueryResultArticle(
+        id=uuid4(),
+        title=" Sorry! 😞",
+        description=" ⚠️ We can't get long long text in inline mode, send it directly",
+        url="t.me/bpaste_bot",
+        thumb_url="http://137.74.154.122/beepastelogo.png",
+        input_message_content=InputTextMessageContent("We can't get so long text in inline mode, send it directly, @bpaste_bot")
+        ))
+    # inline mode for normal text
+    else:
+        results.clear()
+        results.append(InlineQueryResultArticle(
+        id=uuid4(),
+        title=" ✅ Pasted!",
+        description=" pasted with this link",
+        url=inlinepaste(),
+        thumb_url="http://137.74.154.122/beepastelogo.png",
+        input_message_content=InputTextMessageContent(url)
+        ))
     # update inline respond
     update.inline_query.answer(results)
 
