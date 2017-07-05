@@ -24,7 +24,7 @@ second = 2
 
 # start_handler function
 def start(bot, update):
-    update.message.reply_text('Hi, Get me your long text')
+    update.message.reply_text('Hi, Give me your long text or send me your file')
     return second
 
 # get file and paste
@@ -73,7 +73,7 @@ def cancel(bot,update):
     bot.sendMessage(chat_id=update.message.chat_id,text="canceled")
 # About function
 def about(bot,update):
-    abouttext = " @bpaste_bot is a Free Software that developed by Mostafa Asadi \n\n 🌐 https://github.com/mostafaasadi/bpastebot "
+    abouttext = "@BPaste_bot , Can Paste Long Text and File Content In Groups and Private Chats , Via inline Mode Or Directly  \n🆓 This Bot , Totaly Free , Libre and OpenSource \n       🌐 https://github.com/mostafaasadi/bpastebot "
     bot.sendMessage(chat_id=update.message.chat_id,text=abouttext)
 
 # inline respond function
