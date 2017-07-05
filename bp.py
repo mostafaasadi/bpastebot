@@ -4,12 +4,12 @@
 from telegram.ext import Updater,CommandHandler,MessageHandler, Filters ,ConversationHandler,InlineQueryHandler
 from telegram import InlineQueryResultArticle, ParseMode,InputTextMessageContent
 from uuid import uuid4
-import requests,json
+import requests,json,tempfile
 
 # main function , paste to beepaste.io
 def paste(text,author):
     # json data
-    data = {'api-key': 'AAAAAAAAAAAAAAAAAAAA', 'pasteRaw': text, 'pasteLanguage': 'text', 'pasteTitle': 'My Paste', 'pasteAuthor': author + ' , From @bpaste_bot '}
+    data = {'api-key': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'pasteRaw': text, 'pasteLanguage': 'text', 'pasteTitle': 'My Paste', 'pasteAuthor': author + ' , From @bpaste_bot '}
     # request
     rp = requests.post('https://beepaste.io/api', json=data)
     # get url as json
@@ -18,16 +18,42 @@ def paste(text,author):
     return url
 
 # access  bot via token
-updater = Updater(token='NNNNNNNNN:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+updater = Updater(token='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 dispatcher = updater.dispatcher
 second = 2
 
 # start_handler function
 def start(bot, update):
-    update.message.reply_text('Hi, Give me your long text')
+    update.message.reply_text('Hi, Get me your long text')
     return second
 
-# get text and call paste function
+# get file and paste
+def filef(bot,update):
+    # get file id
+    file = bot.getFile(update.message.document.file_id)
+    # create a randon temp file name
+    tf = tempfile.mkstemp()
+    # download file
+    file.download(tf[1])
+    # read file content
+    try:
+        tfco = open(tf[1],"r")
+        tfc = tfco.read()
+        tfco.close()
+    except Exception as e:
+        # if it is not text file
+        bot.sendMessage(chat_id=update.message.chat_id,reply_to_message_id=update.message.message_id,text=" ⚠️ Please send me a text file")
+
+    # get user name for author
+    try:
+        author = update.message.from_user.first_name + " " + update.message.from_user.last_name
+    except Exception:
+        author = "Anonymous user"
+    # call paste function
+    url = paste(tfc , author)
+    # replay the url to user
+    bot.sendMessage(chat_id=update.message.chat_id,reply_to_message_id=update.message.message_id,text=url)
+
 def second(bot, update):
     # get text
     txt = update.message.text
@@ -36,6 +62,7 @@ def second(bot, update):
         author = update.message.from_user.first_name + " " + update.message.from_user.last_name
     except Exception:
         author = "Anonymous user"
+
     # call paste function
     url = paste(txt , author)
     # replay the url to user
@@ -72,7 +99,7 @@ def inlinequery(bot, update):
         title=" ▶️ Beepaste",
         description="type some text less than 256 character in inline mode",
         url="t.me/bpaste_bot",
-        thumb_url="http://137.74.154.122/beepastelogo.png",
+        thumb_url="http://ip/beepastelogo.png",
         input_message_content=InputTextMessageContent("Do you want to try me?! write something \n@bpaste_bot")
         ))
     # inline mode for long text
@@ -83,7 +110,7 @@ def inlinequery(bot, update):
         title=" Sorry! 😞",
         description=" ⚠️ We can't get long long text in inline mode, send it directly",
         url="t.me/bpaste_bot",
-        thumb_url="http://137.74.154.122/beepastelogo.png",
+        thumb_url="http://ip/beepastelogo.png",
         input_message_content=InputTextMessageContent("We can't get so long text in inline mode, send it directly, @bpaste_bot")
         ))
     # inline mode for normal text
@@ -94,38 +121,45 @@ def inlinequery(bot, update):
         title=" ✅ Pasted!",
         description=" pasted with this link",
         url=inlinepaste(),
-        thumb_url="http://137.74.154.122/beepastelogo.png",
+        thumb_url="http://ip/beepastelogo.png",
         input_message_content=InputTextMessageContent(url)
         ))
     # update inline respond
     update.inline_query.answer(results)
 
-# manage conversation
-conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
-        states={
-            second: [MessageHandler(Filters.text,second)],
-             },
-        fallbacks=[CommandHandler('cancel', cancel)])
+def main():
+    # manage conversation
+    conv_handler = ConversationHandler(
+            entry_points=[CommandHandler('start', start)],
+            states={
+                second: [MessageHandler(Filters.text,second)],
+                 },
+            fallbacks=[CommandHandler('cancel', cancel)])
 
-# it handle start command
-start_handler = CommandHandler('start', start)
-# handle all text
-second_handler = MessageHandler(Filters.text , second)
-# handle cancel
-cancel_handler = CommandHandler('cancel', cancel)
-# handle cancel
-about_handler = CommandHandler('about', about)
+    # it handle start command
+    start_handler = CommandHandler('start', start)
+    # handle all text
+    second_handler = MessageHandler(Filters.text , second)
 
-# handle dispatcher
-dispatcher.add_handler(InlineQueryHandler(inlinequery))
-dispatcher.add_handler(start_handler)
-dispatcher.add_handler(second_handler)
-dispatcher.add_handler(conv_handler)
-dispatcher.add_handler(cancel_handler)
-dispatcher.add_handler(about_handler)
+    filef_handler = MessageHandler(Filters.document, filef)
+    # handle cancel
+    cancel_handler = CommandHandler('cancel', cancel)
+    # handle cancel
+    about_handler = CommandHandler('about', about)
 
-# run
-updater.start_polling()
-updater.idle()
-updater.stop()
+    # handle dispatcher
+    dispatcher.add_handler(InlineQueryHandler(inlinequery))
+    dispatcher.add_handler(start_handler)
+    dispatcher.add_handler(second_handler)
+    dispatcher.add_handler(conv_handler)
+    dispatcher.add_handler(cancel_handler)
+    dispatcher.add_handler(about_handler)
+    dispatcher.add_handler(filef_handler)
+
+    # run
+    updater.start_polling()
+    updater.idle()
+    updater.stop()
+
+if __name__ == '__main__':
+    main()
