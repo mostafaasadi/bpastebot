@@ -10,10 +10,8 @@ import requests,json,tempfile
 def paste(text,author):
     # json data
     data = {'api-key': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'pasteRaw': text, 'pasteLanguage': 'text', 'pasteTitle': 'My Paste', 'pasteAuthor': author + ' , From @bpaste_bot '}
-    # request
-    rp = requests.post('https://beepaste.io/api', json=data)
-    # get url as json
-    rpj = rp.json()
+    # request and get url as json
+    rpj = requests.post('https://beepaste.io/api', json=data).json()
     url = rpj["url"]
     return url
 
