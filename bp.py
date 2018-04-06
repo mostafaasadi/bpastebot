@@ -93,7 +93,7 @@ def filef(bot, update):
     bot.sendMessage(
         chat_id=update.message.chat_id,
         reply_to_message_id=update.message.message_id,
-        text='🔗 https://beta.beepaste.io/paste/view/' + p['uri'] + \
+        text='🔗 https://beepaste.io/paste/view/' + p['uri'] + \
             '\n🔗 ' + p['shorturl']
     )
 
@@ -114,7 +114,7 @@ def second(bot, update):
     bot.sendMessage(
         chat_id=update.message.chat_id,
         reply_to_message_id=update.message.message_id,
-        text='🔗 https://beta.beepaste.io/paste/view/' + p['uri'] + \
+        text='🔗 https://beepaste.io/paste/view/' + p['uri'] + \
             '\n🔗 ' + p['shorturl']
     )
 
@@ -176,7 +176,7 @@ def inlinequery(bot, update):
             url=p['shorturl'],
             thumb_url="http://mostafaasadi.ir/bots/beepastelogo.png",
             input_message_content=InputTextMessageContent(
-                '🔗 https://beta.beepaste.io/paste/view/' + p['uri'] + \
+                '🔗 https://beepaste.io/paste/view/' + p['uri'] + \
                 '\n🔗 ' + p['shorturl'])))
     # update inline respond
     update.inline_query.answer(results)
