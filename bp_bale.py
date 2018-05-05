@@ -9,6 +9,7 @@ from balebot.models.base_models import Peer
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 
+Config.real_time_fetch_updates = True
 updater = Updater(token="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 dispatcher = updater.dispatcher
 bot = updater.bot
@@ -90,8 +91,10 @@ def expand(bot, update):
 def download_file(bot, update):
     def final_download_success(result, user_data):
         stream = user_data.get("byte_stream", None)
+        u = update.users[0].get_json_object()
+        author = u['name']
         # call paste function
-        p = paste(stream.decode('utf-8'), 'Anonymous')
+        p = paste(stream.decode('utf-8'), str(author))
         # replay the url to user
         res = '🔗 https://beepaste.io/paste/view/' + p['uri'] + \
             '\n🔗 ' + p['shorturl']
@@ -124,7 +127,10 @@ def about(bot, update):
 @dispatcher.message_handler(filters=[TextFilter()])
 def text(bot, update):
     m = update.get_effective_message()
-    p = paste(m.text, 'Anonymous user')
+    u = update.users[0].get_json_object()
+    author = u['name']
+    p = paste(m.text, str(author))
+
     res = '🔗 https://beepaste.io/paste/view/' + p['uri'] + \
         '\n🔗 ' + p['shorturl']
     bot.reply(update, res)
