@@ -40,7 +40,7 @@ def paste(text, author):
     data = {
         'raw': text,
         'title': 'A new paste',
-        'author': author + ' via @BPaste_bot 🤖'
+        'author': author + ' via 🤖@BPaste_bot on Telegram '
     }
     try:
         r = requests.post(

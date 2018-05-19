@@ -9,3 +9,4 @@
 
 # [@BPaste_bot on Telegram](https://t.me/bpaste_bot)
 # [@BPaste_bot on Bale](https://bale.ai/bpaste_bot)
+# [@BPaste_bot on Gap](https://gap.im/bpaste)
